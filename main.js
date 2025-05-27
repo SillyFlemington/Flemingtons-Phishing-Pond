@@ -34,36 +34,27 @@ function startNewDay() {
   fishingDiv.classList.remove("hidden");
 }
 
-// Fill the pool with emails not used recently
-function refillEmailPoolIfNeeded() {
-  const recent = new Set(usedEmails.map(e => JSON.stringify(e)));
-  emailPool = allEmails.filter(e => !recent.has(JSON.stringify(e)));
-
-  // Shuffle
-  for (let i = emailPool.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [emailPool[i], emailPool[j]] = [emailPool[j], emailPool[i]];
-  }
-}
-
-fishingDiv.addEventListener("click", fishEmail);
-
 function fishEmail() {
   fishingDiv.classList.add("hidden");
   resultDiv.classList.add("hidden");
 
   setTimeout(() => {
-    // If pool is low, refill
     if (emailPool.length === 0) {
       refillEmailPoolIfNeeded();
     }
 
-    currentEmail = emailPool.pop();
-    if (!currentEmail) {
-      console.error("No email could be selected!");
+    // Final fallback if the pool is still empty (edge case)
+    if (emailPool.length === 0) {
+      console.error("No available emails to display.");
+      endStatsDiv.innerHTML = `
+        <h2>Error</h2>
+        <p>There are no more emails to display. Please add more emails to the emails.json file.</p>
+      `;
+      endStatsDiv.classList.remove("hidden");
       return;
     }
 
+    currentEmail = emailPool.pop();
     usedEmails.push(currentEmail);
 
     document.getElementById("email-sender").textContent = `From: ${currentEmail.sender}`;
@@ -73,6 +64,28 @@ function fishEmail() {
     emailDiv.classList.remove("hidden");
   }, 1000);
 }
+
+function refillEmailPoolIfNeeded() {
+  const recentSet = new Set(usedEmails.map(e => JSON.stringify(e)));
+
+  // Filter emails not recently used
+  const freshEmails = allEmails.filter(e => !recentSet.has(JSON.stringify(e)));
+
+  // If too few emails remain, allow reusing older ones
+  if (freshEmails.length < EMAILS_PER_DAY) {
+    emailPool = [...allEmails];
+    usedEmails = [];
+  } else {
+    emailPool = [...freshEmails];
+  }
+
+  // Shuffle
+  for (let i = emailPool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [emailPool[i], emailPool[j]] = [emailPool[j], emailPool[i]];
+  }
+}
+
 
 
 function guess(choice) {
