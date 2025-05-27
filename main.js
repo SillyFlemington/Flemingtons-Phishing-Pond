@@ -53,7 +53,17 @@ function fishEmail() {
   resultDiv.classList.add("hidden");
 
   setTimeout(() => {
+    // If pool is low, refill
+    if (emailPool.length === 0) {
+      refillEmailPoolIfNeeded();
+    }
+
     currentEmail = emailPool.pop();
+    if (!currentEmail) {
+      console.error("No email could be selected!");
+      return;
+    }
+
     usedEmails.push(currentEmail);
 
     document.getElementById("email-sender").textContent = `From: ${currentEmail.sender}`;
@@ -63,6 +73,7 @@ function fishEmail() {
     emailDiv.classList.remove("hidden");
   }, 1000);
 }
+
 
 function guess(choice) {
   emailDiv.classList.add("hidden");
