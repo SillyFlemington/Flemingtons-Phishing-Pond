@@ -1,38 +1,50 @@
-const emails = [
-  {
-    sender: "security@paypal.com",
-    subject: "Suspicious login attempt",
-    body: "Click here to confirm your identity.",
-    isPhishing: true
-  },
-  {
-    sender: "mom@example.com",
-    subject: "Dinner tonight?",
-    body: "Can you bring dessert?",
-    isPhishing: false
-  },
-  {
-    sender: "it-helpdesk@work.org",
-    subject: "Your account will be deactivated",
-    body: "Log in now to prevent shutdown.",
-    isPhishing: true
-  },
-  {
-    sender: "spotify@mail.com",
-    subject: "Thanks for subscribing!",
-    body: "Here’s your receipt.",
-    isPhishing: false
-  }
-];
-
+let allEmails = [];
+let emailPool = [];
+let usedEmails = [];
 let currentEmail = null;
 let emailCount = 0;
 let correct = 0;
 
+const EMAILS_PER_DAY = 6;
+
+// DOM Elements
 const fishingDiv = document.getElementById("fishing");
 const emailDiv = document.getElementById("email");
 const resultDiv = document.getElementById("result");
 const endStatsDiv = document.getElementById("end-stats");
+
+// Load emails from JSON
+fetch("emails.json")
+  .then(response => response.json())
+  .then(data => {
+    allEmails = data;
+    startNewDay();
+  })
+  .catch(err => {
+    console.error("Failed to load emails.json", err);
+  });
+
+// Start a new day with 6 random emails
+function startNewDay() {
+  refillEmailPoolIfNeeded();
+  emailCount = 0;
+  correct = 0;
+  usedEmails = usedEmails.slice(-EMAILS_PER_DAY * 2); // Keep only last 2 days
+
+  fishingDiv.classList.remove("hidden");
+}
+
+// Fill the pool with emails not used recently
+function refillEmailPoolIfNeeded() {
+  const recent = new Set(usedEmails.map(e => JSON.stringify(e)));
+  emailPool = allEmails.filter(e => !recent.has(JSON.stringify(e)));
+
+  // Shuffle
+  for (let i = emailPool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [emailPool[i], emailPool[j]] = [emailPool[j], emailPool[i]];
+  }
+}
 
 fishingDiv.addEventListener("click", fishEmail);
 
@@ -41,19 +53,21 @@ function fishEmail() {
   resultDiv.classList.add("hidden");
 
   setTimeout(() => {
-    currentEmail = emails[Math.floor(Math.random() * emails.length)];
+    currentEmail = emailPool.pop();
+    usedEmails.push(currentEmail);
+
     document.getElementById("email-sender").textContent = `From: ${currentEmail.sender}`;
     document.getElementById("email-subject").textContent = `Subject: ${currentEmail.subject}`;
     document.getElementById("email-body").textContent = currentEmail.body;
 
     emailDiv.classList.remove("hidden");
-  }, 1000); // simulate fishing delay
+  }, 1000);
 }
 
 function guess(choice) {
   emailDiv.classList.add("hidden");
 
-  const correctChoice = currentEmail.isPhishing ? "phish" : "legit";
+  const correctChoice = currentEmail.type === "phish" || currentEmail.isPhishing ? "phish" : "legit";
 
   if (choice === correctChoice) {
     resultDiv.textContent = "✅ Correct!";
@@ -66,7 +80,7 @@ function guess(choice) {
 
   emailCount++;
 
-  if (emailCount >= 6) {
+  if (emailCount >= EMAILS_PER_DAY) {
     showStats();
   } else {
     setTimeout(() => {
@@ -83,14 +97,13 @@ function showStats() {
 
   endStatsDiv.innerHTML = `
     <h2>Day Complete!</h2>
-    <p>You identified ${correct} out of 6 emails correctly.</p>
+    <p>You identified ${correct} out of ${EMAILS_PER_DAY} emails correctly.</p>
     <button onclick="resetGame()">Play Again</button>
   `;
 }
 
 function resetGame() {
-  emailCount = 0;
-  correct = 0;
   endStatsDiv.classList.add("hidden");
-  fishingDiv.classList.remove("hidden");
+  startNewDay();
 }
+
