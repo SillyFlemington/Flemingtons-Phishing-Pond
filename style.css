@@ -1,0 +1,17 @@
+body {
+  font-family: sans-serif;
+  background-color: #f0f8ff;
+  color: #222;
+  text-align: center;
+  padding: 20px;
+}
+
+.hidden {
+  display: none;
+}
+
+.center {
+  margin: 50px auto;
+  font-size: 1.5em;
+  cursor: pointer;
+}
