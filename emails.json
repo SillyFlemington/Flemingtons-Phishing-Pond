@@ -1,0 +1,21 @@
+[
+  {
+    "subject": "Your account is at risk!",
+    "body": "Click here to verify your account before it's suspended.",
+    "sender": "security@micr0soft.com",
+    "type": "phish"
+  },
+  {
+    "subject": "Team Lunch This Friday 🍕",
+    "body": "Hey team, we’re ordering pizza — respond with toppings by Thursday!",
+    "sender": "hr@company.com",
+    "type": "legit"
+  },
+   {
+    "subject": "Free Discord Nitro Week! 🎉",
+    "body": "To celebrate Discord's 9th birthday we have decided to gift everyone a free week of nitro! Click here to redeem.",
+    "sender": "support@discoard.com",
+    "type": "phish"
+  },
+
+]
