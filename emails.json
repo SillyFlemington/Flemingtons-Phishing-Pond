@@ -1,21 +1,26 @@
 [
   {
-    "subject": "Your account is at risk!",
-    "body": "Click here to verify your account before it's suspended.",
-    "sender": "security@micr0soft.com",
+    "sender": "security@paypal.com",
+    "subject": "Suspicious login attempt",
+    "body": "Click here to confirm your identity.",
     "type": "phish"
   },
   {
-    "subject": "Team Lunch This Friday 🍕",
-    "body": "Hey team, we’re ordering pizza — respond with toppings by Thursday!",
-    "sender": "hr@company.com",
+    "sender": "mom@example.com",
+    "subject": "Dinner tonight?",
+    "body": "Can you bring dessert?",
     "type": "legit"
   },
-   {
-    "subject": "Free Discord Nitro Week! 🎉",
-    "body": "To celebrate Discord's 9th birthday we have decided to gift everyone a free week of nitro! Click here to redeem.",
-    "sender": "support@discoard.com",
+  {
+    "sender": "it-helpdesk@work.org",
+    "subject": "Your account will be deactivated",
+    "body": "Log in now to prevent shutdown.",
     "type": "phish"
   },
-
+  {
+    "sender": "spotify@mail.com",
+    "subject": "Thanks for subscribing!",
+    "body": "Here’s your receipt.",
+    "type": "legit"
+  }
 ]
