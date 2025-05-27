@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Flemington’s Phishing Pond</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="game">
+    <h1>🎣 Flemington’s Phishing Pond</h1>
+    <div id="fishing" class="center">Click to cast your line!</div>
+    <div id="email" class="hidden">
+      <h2 id="email-sender"></h2>
+      <p id="email-subject"></p>
+      <p id="email-body"></p>
+      <button onclick="guess('legit')">Legit</button>
+      <button onclick="guess('phish')">Phish</button>
+    </div>
+    <div id="result" class="hidden"></div>
+    <div id="end-stats" class="hidden"></div>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>
